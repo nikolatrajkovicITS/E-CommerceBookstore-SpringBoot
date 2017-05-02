@@ -23,7 +23,7 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
 	 * @param now
 	 */
 	@Modifying
-	@Query("delete from PasswordResetToken t where t.expirydate <= ?1")    // Mozda je ovde napravio gresku "t.where"
+	@Query("delete from PasswordResetToken t where t.expiryDate <= ?1")    
 	void deleteAllExpiredSince(Date now);
 		
 }
