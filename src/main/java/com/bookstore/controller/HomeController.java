@@ -1,10 +1,15 @@
 package com.bookstore.controller;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,11 +23,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bookstore.domain.User;
 import com.bookstore.domain.security.PasswordResetToken;
+import com.bookstore.domain.security.Role;
+import com.bookstore.domain.security.UserRole;
 import com.bookstore.service.UserService;
 import com.bookstore.service.impl.UserSecurityService;
+import com.bookstore.utility.MailConstructor;
+import com.bookstore.utility.SecurityUtility;
 
 @Controller
 public class HomeController {
+	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Autowired
+	private MailConstructor mailConstructor;
 	
 	@Autowired
 	UserService userService;
@@ -45,6 +60,12 @@ public class HomeController {
 		return "myAccount";
 	}
 	
+	/**
+	 * 
+	 *
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/newUser", method=RequestMethod.POST)
 	public String newUserPost(
 			HttpServletRequest request,
@@ -56,9 +77,47 @@ public class HomeController {
 		model.addAttribute("email", userEmail);
 		model.addAttribute("username", username);
 			
+		if (userService.findByUsername(username) != null) {   // Check is username exits
+			model.addAttribute("usernameExists", true);
+			
+			return "myAccount"; 
+		}
 		
-		return null;
-	}
+		if (userService.findByEmail(userEmail) != null) {      // Check is email exits
+			model.addAttribute("emailExists", true);
+			
+			return "myAccount"; 
+		}
+		
+		User user = new User();     // Creating a new user
+		user.setUsername(username);
+		user.setEmail(userEmail);
+		
+		String password = SecurityUtility.randomPassword();                              // Generate radnom pw and assign to 'password' variable
+		
+		String encryptedPassword = SecurityUtility.passwordEncoder().encode(password);   // encrypt which is previous generated
+		user.setPassword(encryptedPassword);                                             // Set new generated and encrypted pw to the user.
+		
+		Role role = new Role();
+	    role.setRoleId(1);
+		role.setName("ROLE_USER");
+		Set<UserRole> userRoles = new HashSet<>();
+		userRoles.add(new UserRole(user, role));
+		userService.createUser(user, userRoles);
+		
+		String token = UUID.randomUUID().toString();               // Generate Token
+		userService.createPasswordResetTokenForUser(user, token);  
+		
+		String appUrl = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+		
+		SimpleMailMessage email = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
+		
+		mailSender.send(email);
+		
+		model.addAttribute("emailSent", "true");
+		
+		return "myAccount"; 
+	}  
 	
 	/**
 	 * After we sent token in email to the user,
