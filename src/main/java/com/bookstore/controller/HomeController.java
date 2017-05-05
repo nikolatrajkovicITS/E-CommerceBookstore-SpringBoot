@@ -130,7 +130,7 @@ public class HomeController {
 	 * 3.Set current login-session to the retrieved user
 	 * 4.Retrieve true(value) to the classActiveEdit
 	 * @return myProfile
-	 */
+	 * */
 	@RequestMapping("/newUser")
 	public String createNewAccount(Locale locale, @RequestParam("token") String token,
 			Model model) {
@@ -152,6 +152,8 @@ public class HomeController {
 		
 		SecurityContextHolder.getContext().setAuthentication(authentication);   // Retrieve the current SecurityContext and set authentication to the current user
 		
+		model.addAttribute("user", user);
+		
 		model.addAttribute("classActiveEdit", true);  
 		return "myProfile";
 	}
@@ -161,7 +163,7 @@ public class HomeController {
 	 * @RequestParam token is for:"extract token".
 	 * @param locale
 	 * @return myAccount.html
-	 */
+	 * */
 	@RequestMapping("/forgetPassword")          
 	public String forgetPassword(Model model) {	
 		model.addAttribute("classActiveForgetPassword", true);  

@@ -33,13 +33,15 @@ public class PasswordResetToken {
 	
 	private Date expiryDate;
 	
+	public PasswordResetToken() {}
+	
 	/**
 	 * Generate token for user and <b>expire</b> date
 	 * @param token
 	 * @param user
 	 */
 	public PasswordResetToken(final String token, final User user) {
-		super();                                                        // If we didn't add this, system will be automatically add, but this is more readable.
+		super();                                                        // If we didn't add this, system will be automatically add, but this is more for readable.
 		
 		this.token = token;
 		this.user = user;
