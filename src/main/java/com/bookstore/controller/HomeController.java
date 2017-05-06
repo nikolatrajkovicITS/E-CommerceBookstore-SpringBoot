@@ -25,6 +25,7 @@ import com.bookstore.domain.User;
 import com.bookstore.domain.security.PasswordResetToken;
 import com.bookstore.domain.security.Role;
 import com.bookstore.domain.security.UserRole;
+import com.bookstore.repository.UserRepository;
 import com.bookstore.service.UserService;
 import com.bookstore.service.impl.UserSecurityService;
 import com.bookstore.utility.MailConstructor;
@@ -53,7 +54,7 @@ public class HomeController {
 	/**
 	 * @param model
 	 * @return from login to myAccount
-	 */
+	 * */
 	@RequestMapping("/login")
 	public String login(Model model) {
 		model.addAttribute("classActiveLogin", true);  // classActiveLogin = true
@@ -62,10 +63,19 @@ public class HomeController {
 	
 	/**
 	 * 
-	 *
-	 * @return
+	 * This method will be executing when
+	 * we click on Create new account button:
+	 * 1. Takes users parameters.
+	 * 2. Check is username/email exists into db.
+	 * 3. Generate random pw - which will be send to user in email body.
+	 * 4. Create and set role for new user.
+	 * 5. Then call method and "createNewUser()".
+	 * 6. Generate appUrl, which user will get in verification email as link to the app.
+	 * 7. Send email.
+	 * 8. @return ("emailSent", "true") to the MyAccount.html
+	 * 9. On fronted we have validation which w8 to check is: "emailSent", "true".
 	 * @throws Exception
-	 */
+	 * */
 	@RequestMapping(value="/newUser", method=RequestMethod.POST)
 	public String newUserPost(
 			HttpServletRequest request,
@@ -159,14 +169,41 @@ public class HomeController {
 	}
 	
 	
-	/**
-	 * @RequestParam token is for:"extract token".
-	 * @param locale
-	 * @return myAccount.html
-	 * */
-	@RequestMapping("/forgetPassword")          
-	public String forgetPassword(Model model) {	
-		model.addAttribute("classActiveForgetPassword", true);  
+	@RequestMapping("/forgetPassword")
+	public String forgetPassword(
+			HttpServletRequest request,
+			@ModelAttribute("email") String email,
+			Model model
+			) {
+
+		model.addAttribute("classActiveForgetPassword", true);
+		
+		User user = userService.findByEmail(email);
+		
+		if (user == null) {
+			model.addAttribute("emailNotExist", true);
+			return "myAccount";
+		}
+		
+		String password = SecurityUtility.randomPassword();
+		
+		String encryptedPassword = SecurityUtility.passwordEncoder().encode(password);
+		user.setPassword(encryptedPassword);
+		
+		userService.save(user);
+		
+		String token = UUID.randomUUID().toString();
+		userService.createPasswordResetTokenForUser(user, token);
+		
+		String appUrl = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+		
+		SimpleMailMessage newEmail = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
+		
+		mailSender.send(newEmail);
+		
+		model.addAttribute("forgetPasswordEmailSent", "true");
+		
 		return "myAccount";
 	}
+		
 }

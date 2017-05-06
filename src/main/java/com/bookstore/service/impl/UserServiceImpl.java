@@ -82,6 +82,11 @@ public class UserServiceImpl implements UserService {
         localUser = userRepository.save(user);
         
         return localUser;
+	}
+
+	@Override
+	public User save(User user) {
+		return userRepository.save(user);
 	}	
 
 }

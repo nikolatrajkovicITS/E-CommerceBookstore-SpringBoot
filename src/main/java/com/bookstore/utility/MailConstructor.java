@@ -19,7 +19,7 @@ public class MailConstructor {
 	/**
 	 * Generate URL,
 	 * @return email 
-	 */
+	 * */
 	public SimpleMailMessage constructResetTokenEmail(
 			String contextPath, Locale locale, String token, User user, String password) {
 		

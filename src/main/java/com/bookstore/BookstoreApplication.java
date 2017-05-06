@@ -33,8 +33,7 @@ public class BookstoreApplication implements CommandLineRunner {
 	 * 4. This user will be a regular ROLE_USER
 	 * 5. Invoice "createUser" method 
 	 * 6. And persist user in db
-	 * 
-	 */
+	 * */
 	@Override
 	 public void run(String... args) throws Exception {
 	  User user1 = new User();

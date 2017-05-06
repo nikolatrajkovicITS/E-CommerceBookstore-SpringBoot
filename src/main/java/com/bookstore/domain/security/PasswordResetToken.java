@@ -39,7 +39,7 @@ public class PasswordResetToken {
 	 * Generate token for user and <b>expire</b> date
 	 * @param token
 	 * @param user
-	 */
+	 * */
 	public PasswordResetToken(final String token, final User user) {
 		super();                                                        // If we didn't add this, system will be automatically add, but this is more for readable.
 		
@@ -53,7 +53,7 @@ public class PasswordResetToken {
 	 * <b>expire</b> date.
 	 * @param expiryTimeInMinutes
 	 * @return a Date representing the time value.
-	 */
+	 * */
 	private Date caluculateExpiryDate (final int expiryTimeInMinutes) {
 		final Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(new Date().getTime());
@@ -64,7 +64,7 @@ public class PasswordResetToken {
 	/**
 	 * This is method for <b>update</b> token. 
 	 * @param token
-	 */
+	 * */
 	public void updateToken(final String token) {
 		this.token = token;
 		this.expiryDate = caluculateExpiryDate(EXPIRATION);

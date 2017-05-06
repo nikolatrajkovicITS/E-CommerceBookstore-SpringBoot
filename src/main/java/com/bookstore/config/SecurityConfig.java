@@ -37,14 +37,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	/**
 	 * This resources will have access 
 	 * without Security
-	 */
+	 * */
 	private static final String[] PUBLIC_MATCHERS = {
 			"/css/**",
 			"/js/**",
 			"/image/**",
 			"/",
 			"/newUser",
-			"/forgetPassword"     
+			"/forgetPassword",
+			"/login",
+			"/fonts/**"
 	};
 	
 	/**
@@ -53,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * with PUBLIC_MATCHERS will be allowed,
 	 * otherwise user will do the authentication.
 	 * @throws Exception
-	 */
+	 * */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -64,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 		    .csrf().disable().cors().disable()                              // If we use REST we should disable csrf and cors
-		    .formLogin().failureUrl("/login?error").defaultSuccessUrl("/")  // This will be check the login
+		    .formLogin().failureUrl("/login?error").defaultSuccessUrl("/")  // On front: th:if="${param.error != null}": ako je "/login?error" ako je param ?error" kao ovde sto je navedno onda on izbacuje validaciju za wrong username i pw
 		    .loginPage("/login").permitAll()                                // Permit access on the Login page
 		    .and()
 		    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -77,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 
 	 * @void Define Authentication 
 	 * @throws Exception
-	 */
+	 * */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userSecurityService).passwordEncoder(passwordEncoder());
