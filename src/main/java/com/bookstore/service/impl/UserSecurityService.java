@@ -17,7 +17,7 @@ public class UserSecurityService implements UserDetailsService {
 	
 	/**
 	 * @return User details
-	 */
+	 **/
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
