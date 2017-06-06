@@ -33,7 +33,7 @@
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false">BOOKS <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a th:href="@{/bookshelf}">Browse the bookshelf</a></li>
+								<li><a href="#">Browse the bookshelf</a></li>
 								<li><a href="#">Store hours &#38; Directions</a></li>
 								<li><a href="#">FAQ</a></li>
 
@@ -49,7 +49,7 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="#">SHOPPING CART</a></li>
 						<li><a sec:authorize="isAnonymous()" th:href="@{/login}">MY ACCOUNT</a></li>
-						<li><a sec:authorize="isAuthenticated()" th:href="@{/myProfile}">MY ACCOUNT</a></li>
+                        <li><a sec:authorize="isAuthenticated()" th:href="@{/myProfile}">MY ACCOUNT</a></li>
 						<li><a sec:authorize="isAuthenticated()" th:href="@{/logout}">LOGOUT</a></li>
 					</ul>
 				</div>
@@ -60,9 +60,10 @@
 	</div>
 	
 	<div th:fragment="body-bottom-scripts">
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
+	<!--
+      <script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	  <script src="/js/bootstrap.min.js"></script>-->
+
 	</div>
 </body>
 </html>
