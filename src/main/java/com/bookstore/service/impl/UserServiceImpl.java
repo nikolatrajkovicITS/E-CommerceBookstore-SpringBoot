@@ -15,14 +15,8 @@ import com.bookstore.repository.RoleRepository;
 import com.bookstore.repository.UserRepository;
 import com.bookstore.service.UserService;
 
-/**
- * 
- * @author nikola.trajkovic
- * Service bean class
- *
- */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 	
@@ -30,63 +24,54 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	RoleRepository roleRepository;
-
+	private RoleRepository roleRepository;
+	
 	@Autowired
 	private PasswordResetTokenRepository passwordResetTokenRepository;
 	
-	@Override                                                              
+	@Override
 	public PasswordResetToken getPasswordResetToken(final String token) {
 		return passwordResetTokenRepository.findByToken(token);
 	}
-
+	
 	@Override
 	public void createPasswordResetTokenForUser(final User user, final String token) {
 		final PasswordResetToken myToken = new PasswordResetToken(token, user);
 		passwordResetTokenRepository.save(myToken);
 	}
-
+	
 	@Override
 	public User findByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
-
+	
 	@Override
-	public User findByEmail(String email) {
+	public User findByEmail (String email) {
 		return userRepository.findByEmail(email);
 	}
-
-	/**
-	 * Create user method
-	 * 1. Take username which client insert
-	 * 2. Check is already exists if not
-	 * 3. Save user roles into roleRepository
-	 * 4. Add all user roles to the user
-	 * 5. Assign and save(in db) to the localUser
-	 * @return localUser
-	 */
+	
 	@Override
-	public User createUser(User user, Set<UserRole> userRoles) throws Exception{
+	public User createUser(User user, Set<UserRole> userRoles){
 		User localUser = userRepository.findByUsername(user.getUsername());
-
-        if(localUser != null) {
-        	LOG.info("user {} already exits. Nothing will be done.", user.getUsername());
-        } else {
-        	for (UserRole ur : userRoles) {
-        		roleRepository.save(ur.getRole());
-        	}
-        }
-        
-        user.getUserRoles().addAll(userRoles);     // Add all user roles
-        
-        localUser = userRepository.save(user);
-        
-        return localUser;
+		
+		if(localUser != null) {
+			LOG.info("user {} already exists. Nothing will be done.", user.getUsername());
+		} else {
+			for (UserRole ur : userRoles) {
+				roleRepository.save(ur.getRole());
+			}
+			
+			user.getUserRoles().addAll(userRoles);
+			
+			localUser = userRepository.save(user);
+		}
+		
+		return localUser;
 	}
-
+	
 	@Override
 	public User save(User user) {
 		return userRepository.save(user);
-	}	
+	}
 
 }

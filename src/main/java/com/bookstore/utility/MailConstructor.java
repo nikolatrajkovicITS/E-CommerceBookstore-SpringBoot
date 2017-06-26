@@ -2,7 +2,6 @@ package com.bookstore.utility;
 
 import java.util.Locale;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,16 +11,12 @@ import com.bookstore.domain.User;
 
 @Component
 public class MailConstructor {
-
 	@Autowired
 	private Environment env;
 	
-	/**
-	 * Generate URL,
-	 * @return email 
-	 * */
 	public SimpleMailMessage constructResetTokenEmail(
-			String contextPath, Locale locale, String token, User user, String password) {
+			String contextPath, Locale locale, String token, User user, String password
+			) {
 		
 		String url = contextPath + "/newUser?token="+token;
 		String message = "\nPlease click on this link to verify your email and edit your personal information. Your password is: \n"+password;
@@ -31,11 +26,6 @@ public class MailConstructor {
 		email.setText(url+message);
 		email.setFrom(env.getProperty("support.email"));
 		return email;
+		
 	}
 }
-
-
-
-
-
-

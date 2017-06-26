@@ -11,11 +11,6 @@ import javax.persistence.Table;
 
 import com.bookstore.domain.User;
 
-/**
- * 
- * @author nikola.trajkovic
- *
- */
 @Entity
 @Table(name="user_role")
 public class UserRole {

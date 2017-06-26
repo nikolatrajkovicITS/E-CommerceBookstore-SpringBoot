@@ -24,52 +24,33 @@ public class PasswordResetToken {
 	
 	private String token;
 	
-	/**
-	 * Binding user in OneToOne relationship 
-	 */
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	@JoinColumn(nullable=false, name="user_id")
 	private User user;
 	
 	private Date expiryDate;
 	
-	public PasswordResetToken() {}
+	public PasswordResetToken(){}
 	
-	/**
-	 * Generate token for user and <b>expire</b> date
-	 * @param token
-	 * @param user
-	 * */
 	public PasswordResetToken(final String token, final User user) {
-		super();                                                        // If we didn't add this, system will be automatically add, but this is more for readable.
+		super ();
 		
 		this.token = token;
 		this.user = user;
-		this.expiryDate = caluculateExpiryDate(EXPIRATION);
+		this.expiryDate = calculateExpiryDate(EXPIRATION);
 	}
 	
-	/**
-	 * This method is for calculate 
-	 * <b>expire</b> date.
-	 * @param expiryTimeInMinutes
-	 * @return a Date representing the time value.
-	 * */
-	private Date caluculateExpiryDate (final int expiryTimeInMinutes) {
+	private Date calculateExpiryDate (final int expiryTimeInMinutes) {
 		final Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(new Date().getTime());
 		cal.add(Calendar.MINUTE, expiryTimeInMinutes);
 		return new Date(cal.getTime().getTime());
 	}
 	
-	/**
-	 * This is method for <b>update</b> token. 
-	 * @param token
-	 * */
 	public void updateToken(final String token) {
 		this.token = token;
-		this.expiryDate = caluculateExpiryDate(EXPIRATION);
+		this.expiryDate = calculateExpiryDate(EXPIRATION);
 	}
-	
 
 	public Long getId() {
 		return id;
@@ -115,10 +96,3 @@ public class PasswordResetToken {
 	
 	
 }
-
-
-
-
-
-
-

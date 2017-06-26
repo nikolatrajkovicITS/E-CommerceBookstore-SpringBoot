@@ -10,14 +10,11 @@ import com.bookstore.domain.User;
 import com.bookstore.repository.UserRepository;
 
 @Service
-public class UserSecurityService implements UserDetailsService {
-
+public class UserSecurityService implements UserDetailsService{
+	
 	@Autowired
 	private UserRepository userRepository;
 	
-	/**
-	 * @return User details
-	 **/
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
@@ -27,5 +24,6 @@ public class UserSecurityService implements UserDetailsService {
 		}
 		
 		return user;
-	} 
+	}
+
 }

@@ -24,34 +24,20 @@ public class BookstoreApplication implements CommandLineRunner {
 		SpringApplication.run(BookstoreApplication.class, args);
 	}
 	
-	/**
-	 * Every time when app is running
-	 * It will be run with this command:
-	 * 1. Create a new user
-	 * 2. Set corresponding properties
-	 * 3. Pw is encoded cus is stored in db
-	 * 4. This user will be a regular ROLE_USER
-	 * 5. Invoice "createUser" method 
-	 * 6. And persist user in db
-	 * */
 	@Override
-	 public void run(String... args) throws Exception {
-	  User user1 = new User();
-	  user1.setFirstName("John");
-	  user1.setLastName("Adams");
-	  user1.setUsername("j");
-	  user1.setPassword(SecurityUtility.passwordEncoder().encode("p"));
-	  user1.setEmail("JAdams@gmail.com");
-	  Set<UserRole> userRoles = new HashSet<>();
-	  Role role1= new Role();
-	  role1.setRoleId(1);
-	  role1.setName("ROLE_USER");
-	  userRoles.add(new UserRole(user1, role1));
-	  
-	  userService.createUser(user1, userRoles);
-	 }
-	
+	public void run(String... args) throws Exception {
+		User user1 = new User();
+		user1.setFirstName("John");
+		user1.setLastName("Adams");
+		user1.setUsername("j");
+		user1.setPassword(SecurityUtility.passwordEncoder().encode("p"));
+		user1.setEmail("JAdams@gmail.com");
+		Set<UserRole> userRoles = new HashSet<>();
+		Role role1= new Role();
+		role1.setRoleId(1);
+		role1.setName("ROLE_USER");
+		userRoles.add(new UserRole(user1, role1));
+		
+		userService.createUser(user1, userRoles);
+	}
 }
-
-
-
